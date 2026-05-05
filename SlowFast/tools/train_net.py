@@ -256,13 +256,20 @@ def train_epoch(
             )
             # write to tensorboard format if available.
             if writer is not None:
+                print(0/0)
+                
+                scalars_to_log = {
+                    "Train/loss": loss,
+                    "Train/lr": lr,
+                }
+                # Only add top1_err and top5_err if they're not None
+                if top1_err is not None:
+                    scalars_to_log["Train/Top1_err"] = top1_err
+                if top5_err is not None:
+                    scalars_to_log["Train/Top5_err"] = top5_err
+                
                 writer.add_scalars(
-                    {
-                        "Train/loss": loss,
-                        "Train/lr": lr,
-                        "Train/Top1_err": top1_err,
-                        "Train/Top5_err": top5_err,
-                    },
+                    scalars_to_log,
                     global_step=data_size * cur_epoch + cur_iter,
                 )
         train_meter.iter_toc()  # do measure allreduce for this meter
